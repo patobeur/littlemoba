@@ -160,6 +160,9 @@ function addStructureHUD(mesh, strData, id) {
     // Add to WORLD, not mesh
     world.add(hudGroup);
 
+    // Make HUD non-clickable
+    hudGroup.userData.ignoreRaycast = true;
+
     // Store references on the mesh so we can find the HUD later
     mesh.userData.structureId = id;
     mesh.userData.hud = {

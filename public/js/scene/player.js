@@ -114,6 +114,9 @@ function createPlayerHUD(name, level, factionColor) {
     hudGroup.position.y = 2; // Positionner au-dessus de la tête du joueur
     hudGroup.position.z = 0; // Positionner au-dessus de la tête du joueur
 
+    // Make HUD non-clickable
+    hudGroup.userData.ignoreRaycast = true;
+
     return hudGroup;
 }
 

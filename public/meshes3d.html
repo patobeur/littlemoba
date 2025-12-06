@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="fr">
-	<head>
-		<meta charset="UTF-8" />
-		<title>Vue des Modèles 3D</title>
-		<style>
-			body {
-				margin: 0;
-			}
-			canvas {
-				display: block;
-			}
-		</style>
-		<script type="importmap">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Vue des Modèles 3D</title>
+	<style>
+		body {
+			margin: 0;
+		}
+
+		canvas {
+			display: block;
+		}
+	</style>
+	<script type="importmap">
 			{
 				"imports": {
 					"three": "/node_modules/three/build/three.module.js",
@@ -21,133 +23,158 @@
 				}
 			}
 		</script>
-	</head>
-	<body>
-		<script type="module">
-			import * as THREE from "three";
-			import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
-			import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-			import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+</head>
 
-			let scene, camera, renderer, controls;
-			const models = [];
+<body>
+	<link rel="stylesheet" href="css/navbar.css" />
+	<div class="main-navbar">
+		<div class="nav-left">
+			<a href="/lobby.html" class="nav-brand">
+				🎮 <span>Local LAN RPG</span>
+			</a>
+			<div class="nav-links">
+				<div class="nav-dropdown">
+					<button class="nav-dropbtn">Minions ▾</button>
+					<div class="nav-dropdown-content">
+						<a href="/meshes3d.html">Voir les modèles</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="nav-right">
+			<div class="nav-user-info">
+				👤 <span class="nav-username" id="navUsername">Chargement...</span>
+			</div>
+			<button class="nav-btn nav-btn-secondary" id="navLogoutBtn">Déconnexion</button>
+		</div>
+	</div>
+	<script src="js/navbar.js"></script>
+	<script type="module">
+		import * as THREE from "three";
+		import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
+		import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+		import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-			const files = {
-				minion_mage_blue: {
-					path: "/media/minions/glb/minion_mage_blue.fbx",
-				},
-				minion_tank_blue: {
-					path: "/media/minions/glb/minion_tank_blue.fbx",
-				},
-				minion_healer_blue: {
-					path: "/media/minions/glb/minion_healer_blue.fbx",
-				},
-				//-----
-				minion_mage_red: { path: "/media/minions/glb/minion_mage_red.fbx" },
-				minion_tank_red: { path: "/media/minions/glb/minion_tank_red.fbx" },
-				minion_healer_red: {
-					path: "/media/minions/glb/minion_healer_red.fbx",
-				},
-				// -----------
-				X_Bot: { path: "/media/characters/glb/X_Bot.fbx" },
-				Y_Bot: { path: "/media/characters/glb/Y_Bot.fbx" },
-				// -----------
-				baseTeamB: { path: "/media/structures/glb/baseTeamB.glb" },
-				baseTeamA: { path: "/media/structures/glb/baseTeamA.glb" },
-			};
+		let scene, camera, renderer, controls;
+		const models = [];
 
-			function init() {
-				scene = new THREE.Scene();
-				scene.background = new THREE.Color(0xdddddd);
+		const files = {
+			minion_mage_blue: {
+				path: "/media/minions/glb/minion_mage_blue.fbx",
+			},
+			minion_tank_blue: {
+				path: "/media/minions/glb/minion_tank_blue.fbx",
+			},
+			minion_healer_blue: {
+				path: "/media/minions/glb/minion_healer_blue.fbx",
+			},
+			//-----
+			minion_mage_red: { path: "/media/minions/glb/minion_mage_red.fbx" },
+			minion_tank_red: { path: "/media/minions/glb/minion_tank_red.fbx" },
+			minion_healer_red: {
+				path: "/media/minions/glb/minion_healer_red.fbx",
+			},
+			// -----------
+			X_Bot: { path: "/media/characters/glb/X_Bot.fbx" },
+			Y_Bot: { path: "/media/characters/glb/Y_Bot.fbx" },
+			// -----------
+			baseTeamB: { path: "/media/structures/glb/baseTeamB.glb" },
+			baseTeamA: { path: "/media/structures/glb/baseTeamA.glb" },
+		};
 
-				camera = new THREE.PerspectiveCamera(
-					75,
-					window.innerWidth / window.innerHeight,
-					0.1,
-					1000
-				);
-				camera.position.set(0, 2, 8);
+		function init() {
+			scene = new THREE.Scene();
+			scene.background = new THREE.Color(0xdddddd);
 
-				renderer = new THREE.WebGLRenderer({ antialias: true });
-				renderer.setSize(window.innerWidth, window.innerHeight);
-				document.body.appendChild(renderer.domElement);
+			camera = new THREE.PerspectiveCamera(
+				75,
+				window.innerWidth / window.innerHeight,
+				0.1,
+				1000
+			);
+			camera.position.set(0, 2, 8);
 
-				controls = new OrbitControls(camera, renderer.domElement);
+			renderer = new THREE.WebGLRenderer({ antialias: true });
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
 
-				const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-				scene.add(ambientLight);
+			controls = new OrbitControls(camera, renderer.domElement);
 
-				const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-				directionalLight.position.set(5, 10, 7.5);
-				scene.add(directionalLight);
+			const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+			scene.add(ambientLight);
 
-				loadModels();
-				animate();
-			}
+			const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+			directionalLight.position.set(5, 10, 7.5);
+			scene.add(directionalLight);
 
-			function loadModels() {
-				const fbxLoader = new FBXLoader();
-				const gltfLoader = new GLTFLoader();
-				const modelEntries = Object.values(files);
-				const numModels = modelEntries.length;
-				const modelsPerRow = 3;
-				const spacing = 3;
+			loadModels();
+			animate();
+		}
 
-				modelEntries.forEach((file, index) => {
-					const isFbx = file.path.toLowerCase().endsWith(".fbx");
-					const loader = isFbx ? fbxLoader : gltfLoader;
+		function loadModels() {
+			const fbxLoader = new FBXLoader();
+			const gltfLoader = new GLTFLoader();
+			const modelEntries = Object.values(files);
+			const numModels = modelEntries.length;
+			const modelsPerRow = 3;
+			const spacing = 3;
 
-					loader.load(
-						file.path,
-						(object) => {
-							const model = isFbx ? object : object.scene;
+			modelEntries.forEach((file, index) => {
+				const isFbx = file.path.toLowerCase().endsWith(".fbx");
+				const loader = isFbx ? fbxLoader : gltfLoader;
 
-							const row = Math.floor(index / modelsPerRow);
-							const col = index % modelsPerRow;
+				loader.load(
+					file.path,
+					(object) => {
+						const model = isFbx ? object : object.scene;
 
-							model.position.set(
-								(col - (modelsPerRow - 1) / 2) * spacing,
-								-row * spacing,
-								0
-							);
+						const row = Math.floor(index / modelsPerRow);
+						const col = index % modelsPerRow;
 
-							if (isFbx) {
-								model.scale.set(0.01, 0.01, 0.01);
-							} else {
-								// GLB models might not need scaling, or different scaling
-								model.scale.set(1, 1, 1);
-							}
+						model.position.set(
+							(col - (modelsPerRow - 1) / 2) * spacing,
+							-row * spacing,
+							0
+						);
 
-							scene.add(model);
-							models.push(model);
-						},
-						undefined,
-						(error) => {
-							console.error(
-								`An error happened while loading ${file.path}:`,
-								error
-							);
+						if (isFbx) {
+							model.scale.set(0.01, 0.01, 0.01);
+						} else {
+							// GLB models might not need scaling, or different scaling
+							model.scale.set(1, 1, 1);
 						}
-					);
-				});
-			}
 
-			function animate() {
-				requestAnimationFrame(animate);
-				models.forEach((model) => {
-					model.rotation.y += 0.005;
-				});
-				controls.update();
-				renderer.render(scene, camera);
-			}
-
-			window.addEventListener("resize", () => {
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-				renderer.setSize(window.innerWidth, window.innerHeight);
+						scene.add(model);
+						models.push(model);
+					},
+					undefined,
+					(error) => {
+						console.error(
+							`An error happened while loading ${file.path}:`,
+							error
+						);
+					}
+				);
 			});
+		}
 
-			init();
-		</script>
-	</body>
+		function animate() {
+			requestAnimationFrame(animate);
+			models.forEach((model) => {
+				model.rotation.y += 0.005;
+			});
+			controls.update();
+			renderer.render(scene, camera);
+		}
+
+		window.addEventListener("resize", () => {
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+		});
+
+		init();
+	</script>
+</body>
+
 </html>

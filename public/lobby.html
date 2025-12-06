@@ -9,36 +9,43 @@
 </head>
 
 <body>
-	<div class="navbar">
-		<div class="dropdown">
-			<button class="dropbtn">Minions</button>
-			<div class="dropdown-content">
-				<a href="/meshes3d.html">Voir les modèles</a>
-			</div>
-		</div>
-	</div>
-	<div class="container">
-		<div class="header">
-			<h1>🎮 Local LAN RPG</h1>
-			<div class="header-actions">
-				<span class="username" id="username"></span>
-				<button class="btn-secondary" id="logoutBtn">Déconnexion</button>
-			</div>
-		</div>
+	<link rel="stylesheet" href="css/navbar.css" />
 
-		<div class="lobby-content">
-			<div class="lobby-header">
-				<h2>Salles disponibles</h2>
-				<div class="lobby-actions">
-					<button class="btn-primary" id="createRoomBtn">➕ Créer une salle</button>
-					<button class="btn-secondary" id="refreshBtn">🔄 Rafraîchir</button>
+	<div class="main-navbar">
+		<div class="nav-left">
+			<a href="/lobby.html" class="nav-brand">
+				🎮 <span>Local LAN RPG</span>
+			</a>
+			<div class="nav-links">
+				<div class="nav-dropdown">
+					<button class="nav-dropbtn">Minions ▾</button>
+					<div class="nav-dropdown-content">
+						<a href="/meshes3d.html">Voir les modèles</a>
+					</div>
 				</div>
 			</div>
+		</div>
+		<div class="nav-right">
+			<div class="nav-user-info">
+				👤 <span class="nav-username" id="navUsername">Chargement...</span>
+			</div>
+			<button class="nav-btn nav-btn-secondary" id="navLogoutBtn">Déconnexion</button>
+		</div>
+	</div>
 
-			<div class="rooms-grid" id="roomsGrid">
-				<div class="loading">Chargement des salles...</div>
+	<div class="lobby-content">
+		<div class="lobby-header">
+			<h2>Salles disponibles</h2>
+			<div class="lobby-actions">
+				<button class="btn-primary" id="createRoomBtn">➕ Créer une salle</button>
+				<button class="btn-secondary" id="refreshBtn">🔄 Rafraîchir</button>
 			</div>
 		</div>
+
+		<div class="rooms-grid" id="roomsGrid">
+			<div class="loading">Chargement des salles...</div>
+		</div>
+	</div>
 	</div>
 
 	<!-- Modal Create Room -->
@@ -61,6 +68,7 @@
 	</div>
 
 	<script src="js/lobby.js"></script>
+	<script src="js/navbar.js"></script>
 	<script src="js/pwa.js"></script>
 </body>
 

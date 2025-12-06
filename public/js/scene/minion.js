@@ -86,6 +86,9 @@ function createMinionHealthBar(faction) {
 
     hudGroup.position.y = 1.2; // Above minion head
 
+    // Make HUD non-clickable
+    hudGroup.userData.ignoreRaycast = true;
+
     return hudGroup;
 }
 
