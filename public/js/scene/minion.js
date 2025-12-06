@@ -1,9 +1,5 @@
 import * as THREE from "/node_modules/three/build/three.module.js";
-import { GLTFLoader } from "/node_modules/three/examples/jsm/loaders/GLTFLoader.js";
-
-const loader = new GLTFLoader();
-const modelCache = {}; // caching loaded models
-const pendingLoads = {}; // caching promises for specific model names
+import { assetLoader } from "../loaders/asset-loader.js";
 
 /**
  * Create a 3D mesh for a minion
@@ -14,7 +10,7 @@ const pendingLoads = {}; // caching promises for specific model names
 export function makeMinionMesh(name, faction) {
     const g = new THREE.Group();
 
-    // Health bar (create immediately so it's there while loading)
+    // Health bar (create immediately)
     const healthBarGroup = createMinionHealthBar(faction);
     g.add(healthBarGroup);
     g.userData.healthBarGroup = healthBarGroup;
@@ -23,66 +19,23 @@ export function makeMinionMesh(name, faction) {
     g.userData.faction = faction;
     g.userData.name = name;
 
-    const loadModel = () => {
-        // 1. Check if model is already cached
-        if (modelCache[name]) {
-            const model = modelCache[name].clone();
-            setupModel(model, g);
-            return;
-        }
+    // Get model from asset loader (already pre-loaded)
+    const model = assetLoader.getModel(name);
 
-        // 2. Check if model is currently loading
-        if (pendingLoads[name]) {
-            pendingLoads[name].then((model) => {
-                setupModel(model.clone(), g);
-            });
-            return;
-        }
-
-        // 3. Start new load
-        const modelPath = `/media/minions/glb/${name}.glb`;
-        console.log(`[Minion] Loading model from: ${modelPath}`);
-
-        pendingLoads[name] = new Promise((resolve, reject) => {
-            loader.load(
-                modelPath,
-                (gltf) => {
-                    const model = gltf.scene;
-                    console.log(`[Minion] Loaded source model for ${name}`);
-
-                    // Adjust scale
-                    model.scale.set(1, 1, 1);
-
-                    // Enable shadows
-                    model.traverse((child) => {
-                        if (child.isMesh) {
-                            child.castShadow = true;
-                            child.receiveShadow = true;
-                        }
-                    });
-
-                    modelCache[name] = model;
-                    resolve(model);
-                },
-                undefined,
-                (error) => {
-                    console.error(`Error loading minion model ${name}:`, error);
-                    reject(error);
-                }
-            );
+    if (model) {
+        // Setup model
+        model.scale.set(1, 1, 1);
+        model.traverse((child) => {
+            if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+            }
         });
-
-        pendingLoads[name]
-            .then((model) => {
-                setupModel(model.clone(), g);
-            })
-            .catch(() => {
-                // Fallback on error
-                createFallbackMesh(g, faction);
-            });
-    };
-
-    loadModel();
+        g.add(model);
+    } else {
+        console.warn(`[Minion] Model ${name} not found in cache, using fallback`);
+        createFallbackMesh(g, faction);
+    }
 
     return g;
 }
@@ -143,10 +96,6 @@ export function updateMinionHealth(minionMesh, health, maxHealth) {
     const healthPercent = Math.max(0, Math.min(1, health / maxHealth));
     healthBar.scale.x = healthPercent;
     healthBar.position.x = -barWidth / 2 + (barWidth * healthPercent) / 2;
-}
-
-function setupModel(model, group) {
-    group.add(model);
 }
 
 function createFallbackMesh(g, faction) {

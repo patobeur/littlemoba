@@ -14,6 +14,11 @@ import { initGameState, others } from "./main/game-state.js";
 import { connectToRoomGame } from "./main/network.js";
 import { startGameLoop } from "./main/game-loop.js";
 
+// Import loading system
+import { assetLoader } from "./loaders/asset-loader.js";
+import { loadingScreen } from "./loaders/loading-screen.js";
+import { getRequiredAssets } from "./loaders/asset-list.js";
+
 // Verify room ID from URL
 const qs = new URLSearchParams(location.search);
 const roomId = qs.get("roomId");
@@ -25,6 +30,15 @@ if (!roomId) {
 
 // Initialize game state with room ID
 initGameState(roomId);
+
+// Initialize loading screen
+loadingScreen.init();
+loadingScreen.show();
+
+// Setup progress callback
+assetLoader.onProgress((progress) => {
+	loadingScreen.updateProgress(progress);
+});
 
 // Initialize input system
 initInput();
@@ -41,6 +55,42 @@ const gameUI = initGameUI((mode) => {
 	console.log(`[Game] Movement mode set to: ${mode}`);
 });
 
-// Connect to room and start game
-connectToRoomGame(gameUI);
-startGameLoop();
+// Modified game initialization flow
+async function initializeGame() {
+	try {
+		// Get room data first
+		const roomRes = await fetch(`/api/rooms/${roomId}`);
+		const roomData = await roomRes.json();
+
+		if (!roomData.success) {
+			alert("Salle introuvable");
+			window.location.href = "/lobby.html";
+			return;
+		}
+
+		// Get required assets list
+		const assetsList = getRequiredAssets(roomData);
+		console.log('[Game] Assets to load:', assetsList);
+
+		// Load all assets
+		loadingScreen.setStatus('Chargement des modèles 3D...');
+		await assetLoader.loadAssets(assetsList);
+
+		// Mark as ready and connect
+		loadingScreen.markReady();
+		loadingScreen.setStatus('Assets chargés! En attente des autres joueurs...');
+
+		// Connect to room (assets-loaded will be sent from network.js after connection)
+		await connectToRoomGame(gameUI);
+
+		// Game loop will start when server sends "all-players-ready"
+
+	} catch (error) {
+		console.error('[Game] Initialization error:', error);
+		alert("Erreur lors du chargement du jeu");
+		window.location.href = "/lobby.html";
+	}
+}
+
+// Start initialization
+initializeGame();

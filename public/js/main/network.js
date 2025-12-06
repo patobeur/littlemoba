@@ -12,6 +12,8 @@ import {
     setGameUI as setMessageHandlerGameUI,
     setPlayerColor as setMessageHandlerPlayerColor,
 } from "./message-handlers.js";
+import { loadingScreen } from "../loaders/loading-screen.js";
+import { stopGameLoop } from "./game-loop.js";
 
 let ws = null;
 
@@ -84,14 +86,30 @@ export async function connectToRoomGame(gameUI) {
                         character: me.character,
                     })
                 );
+
+                // Now send assets-loaded (all assets are pre-loaded)
+                sendAssetsLoaded();
+            }
+
+            // Handle ready players update
+            if (msg.type === "ready-players-update") {
+                console.log("[Network] Ready players:", msg.readyPlayers);
+                loadingScreen.updateReadyPlayers(msg.readyPlayers);
+            }
+
+            // Handle all players ready - start game
+            if (msg.type === "all-players-ready") {
+                console.log("[Network] All players ready, starting game!");
+                loadingScreen.hide();
+                import("./game-loop.js").then(({ startGameLoop }) => {
+                    startGameLoop();
+                });
             }
 
             // Handle server shutdown
             if (msg.type === "server-shutdown") {
                 console.warn("[WS] Server shutting down");
-                import("./game-loop.js").then(({ stopGameLoop }) => {
-                    stopGameLoop();
-                });
+                stopGameLoop();
                 alert("Le serveur s'est arrêté. Retour à l'accueil.");
                 window.location.href = "/lobby.html";
             }
@@ -140,4 +158,14 @@ export function sendStateUpdate(x, y, z, rotY) {
  */
 export function getWebSocket() {
     return ws;
+}
+
+/**
+ * Send assets-loaded message to server
+ */
+export function sendAssetsLoaded() {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: "assets-loaded" }));
+        console.log("[Network] Sent assets-loaded to server");
+    }
 }
