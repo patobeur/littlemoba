@@ -1,4 +1,9 @@
 import * as THREE from "/node_modules/three/build/three.module.js";
+import { GLTFLoader } from "/node_modules/three/examples/jsm/loaders/GLTFLoader.js";
+
+const loader = new GLTFLoader();
+const modelCache = {}; // caching loaded models
+const pendingLoads = {}; // caching promises for specific model names
 
 /**
  * Create a 3D mesh for a minion
@@ -9,36 +14,7 @@ import * as THREE from "/node_modules/three/build/three.module.js";
 export function makeMinionMesh(name, faction) {
     const g = new THREE.Group();
 
-    // Determine color based on faction
-    const bodyColor = faction === "blue" ? 0x4169E1 : 0xDC143C;
-    const accentColor = faction === "blue" ? 0x1E90FF : 0xFF6347;
-
-    // Body - smaller cylinder than player
-    const body = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.25, 0.25, 0.6, 8),
-        new THREE.MeshStandardMaterial({ color: bodyColor })
-    );
-    body.position.y = 0.3;
-    g.add(body);
-
-    // Head - smaller sphere
-    const head = new THREE.Mesh(
-        new THREE.SphereGeometry(0.18, 12, 10),
-        new THREE.MeshStandardMaterial({ color: accentColor })
-    );
-    head.position.y = 0.75;
-    g.add(head);
-
-    // Direction indicator
-    const dir = new THREE.Mesh(
-        new THREE.ConeGeometry(0.1, 0.2, 8),
-        new THREE.MeshStandardMaterial({ color: 0xeeeeee })
-    );
-    dir.rotation.x = Math.PI;
-    dir.position.set(0, 0.75, 0.25);
-    g.add(dir);
-
-    // Health bar
+    // Health bar (create immediately so it's there while loading)
     const healthBarGroup = createMinionHealthBar(faction);
     g.add(healthBarGroup);
     g.userData.healthBarGroup = healthBarGroup;
@@ -46,6 +22,67 @@ export function makeMinionMesh(name, faction) {
     // Store faction and name
     g.userData.faction = faction;
     g.userData.name = name;
+
+    const loadModel = () => {
+        // 1. Check if model is already cached
+        if (modelCache[name]) {
+            const model = modelCache[name].clone();
+            setupModel(model, g);
+            return;
+        }
+
+        // 2. Check if model is currently loading
+        if (pendingLoads[name]) {
+            pendingLoads[name].then((model) => {
+                setupModel(model.clone(), g);
+            });
+            return;
+        }
+
+        // 3. Start new load
+        const modelPath = `/media/minions/glb/${name}.glb`;
+        console.log(`[Minion] Loading model from: ${modelPath}`);
+
+        pendingLoads[name] = new Promise((resolve, reject) => {
+            loader.load(
+                modelPath,
+                (gltf) => {
+                    const model = gltf.scene;
+                    console.log(`[Minion] Loaded source model for ${name}`);
+
+                    // Adjust scale
+                    model.scale.set(1, 1, 1);
+
+                    // Enable shadows
+                    model.traverse((child) => {
+                        if (child.isMesh) {
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+                        }
+                    });
+
+                    modelCache[name] = model;
+                    resolve(model);
+                },
+                undefined,
+                (error) => {
+                    console.error(`Error loading minion model ${name}:`, error);
+                    reject(error);
+                }
+            );
+        });
+
+        pendingLoads[name]
+            .then((model) => {
+                setupModel(model.clone(), g);
+            })
+            .catch(() => {
+                // Fallback on error
+                createFallbackMesh(g, faction);
+            });
+    };
+
+    loadModel();
 
     return g;
 }
@@ -106,4 +143,18 @@ export function updateMinionHealth(minionMesh, health, maxHealth) {
     const healthPercent = Math.max(0, Math.min(1, health / maxHealth));
     healthBar.scale.x = healthPercent;
     healthBar.position.x = -barWidth / 2 + (barWidth * healthPercent) / 2;
+}
+
+function setupModel(model, group) {
+    group.add(model);
+}
+
+function createFallbackMesh(g, faction) {
+    const bodyColor = faction === "blue" ? 0x4169E1 : 0xDC143C;
+    const body = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.25, 0.25, 0.6, 8),
+        new THREE.MeshStandardMaterial({ color: bodyColor })
+    );
+    body.position.y = 0.3;
+    g.add(body);
 }

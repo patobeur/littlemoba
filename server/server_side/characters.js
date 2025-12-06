@@ -7,7 +7,7 @@ const characters = {
 		"Zephyr",
 		// "wizard",
 		"Flora",
-		// "Shadow",
+		"Shadow",
 		// "ChefRipley",
 	],
 	types: [
@@ -82,7 +82,7 @@ const characters = {
 			scale: 1,
 			svg: "Moonba.svg",
 			png: "Moonba.png",
-			glb: "Moonba.glb",
+			glb: "Moonba.gltf",
 		},
 		Wiko: {
 			name: "Wiko",
@@ -138,7 +138,7 @@ const characters = {
 			scale: 1,
 			svg: "wiko.svg",
 			png: "Wiko.png",
-			glb: "Wiko.glb",
+			glb: "Wiko.gltf",
 		},
 		Squazzzza: {
 			name: "Squazzzza",
@@ -195,7 +195,7 @@ const characters = {
 			scale: 1,
 			svg: "squazzzza.svg",
 			png: "Squazzzza.png",
-			glb: "Squazzzza.glb",
+			gltf: "Squazzzza.gltf",
 		},
 		Gromp: {
 			name: "Gromp",
@@ -251,7 +251,7 @@ const characters = {
 			scale: 1,
 			svg: "gromp.svg",
 			png: "Gromp.png",
-			// glb: "Gromp.glb",
+			gltf: "Gromp.gltf",
 		},
 		Zephyr: {
 			name: "Zephyr",
@@ -307,7 +307,7 @@ const characters = {
 			scale: 1,
 			svg: "zephyr.svg",
 			png: "Zephyr.png",
-			glb: "Zephyr.glb",
+			glb: "Zephyr.gltf",
 		},
 		// wizard: {
 		// 	name: "wizard",
@@ -365,7 +365,7 @@ const characters = {
 		// 	scale: 1,
 		// 	svg: "wizard.svg",
 		// 	png: "wizard.png",
-		// 	glb: "wizard.glb",
+		// 	glb: "wizard.gltf",
 		// },
 		Flora: {
 			name: "Flora",
@@ -425,7 +425,7 @@ const characters = {
 			scale: 1,
 			svg: "flora.svg",
 			png: "Flora.png",
-			glb: "Flora.glb",
+			glb: "Flora.gltf",
 		},
 		Shadow: {
 			name: "Shadow",
@@ -481,7 +481,7 @@ const characters = {
 			scale: 1,
 			// svg: "shadow.svg",
 			png: "Shadow.png",
-			// glb: "Shadow.glb",
+			glb: "Shadow.gltf",
 		},
 		// Adventurer: {
 		// 	name: "Adventurer",
@@ -539,7 +539,7 @@ const characters = {
 		// 	scale: 1,
 		// 	svg: "Adventurer.svg",
 		// 	png: "Adventurer.jpg",
-		// 	glb: "Adventurer.glb",
+		// 	glb: "Adventurer.gltf",
 		// },
 		// ChefRipley: {
 		// 	name: "ChefRipley",
@@ -599,7 +599,7 @@ const characters = {
 		// 	scale: 1,
 		// 	svg: "ChefRipley.svg",
 		// 	png: "ChefRipley.jpg",
-		// 	glb: "ChefRipley.glb",
+		// 	glb: "ChefRipley.gltf",
 		// },
 	},
 };
