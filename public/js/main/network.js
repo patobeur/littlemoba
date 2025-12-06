@@ -85,11 +85,31 @@ export async function connectToRoomGame(gameUI) {
                     })
                 );
             }
+
+            // Handle server shutdown
+            if (msg.type === "server-shutdown") {
+                console.warn("[WS] Server shutting down");
+                import("./game-loop.js").then(({ stopGameLoop }) => {
+                    stopGameLoop();
+                });
+                alert("Le serveur s'est arrêté. Retour à l'accueil.");
+                window.location.href = "/lobby.html";
+            }
         };
 
         ws.onclose = () => {
             console.log("[WS] Disconnected from game");
             setGameState("connecting");
+
+            // If we didn't initiate the disconnect (e.g. shutdown), we should stop
+            import("./game-loop.js").then(({ stopGameLoop }) => {
+                stopGameLoop();
+            });
+
+            // Optional: Show offline status in HUD instead of alert if it's just a hiccup
+            // But for now, let's be explicit
+            const statusEl = document.getElementById("status");
+            if (statusEl) statusEl.textContent = "Déconnecté...";
         };
 
         ws.onerror = (error) => {
