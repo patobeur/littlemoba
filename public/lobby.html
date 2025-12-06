@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Lobby - Local LAN RPG</title>
+		<link rel="stylesheet" href="lobby.css" />
+	</head>
+
+	<body>
+		<div class="navbar">
+			<div class="dropdown">
+				<button class="dropbtn">Minions</button>
+				<div class="dropdown-content">
+					<a href="/meshes3d.html">Voir les modèles</a>
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="header">
+				<h1>🎮 Local LAN RPG</h1>
+				<div class="header-actions">
+					<span class="username" id="username"></span>
+					<button class="btn-secondary" id="logoutBtn">Déconnexion</button>
+				</div>
+			</div>
+
+			<div class="lobby-content">
+				<div class="lobby-header">
+					<h2>Salles disponibles</h2>
+					<div class="lobby-actions">
+						<button class="btn-primary" id="createRoomBtn"
+							>➕ Créer une salle</button
+						>
+						<button class="btn-secondary" id="refreshBtn"
+							>🔄 Rafraîchir</button
+						>
+					</div>
+				</div>
+
+				<div class="rooms-grid" id="roomsGrid">
+					<div class="loading">Chargement des salles...</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal Create Room -->
+		<div id="createRoomModal" class="modal hidden">
+			<div class="modal-content">
+				<h3>Créer une nouvelle salle</h3>
+				<form id="createRoomForm">
+					<div class="form-group">
+						<label for="roomName">Nom de la salle</label>
+						<input
+							type="text"
+							id="roomName"
+							name="roomName"
+							required
+							placeholder="Ma super salle"
+							maxlength="30" />
+					</div>
+					<div class="error-message" id="createError"></div>
+					<div class="modal-buttons">
+						<button type="button" class="btn-secondary" id="cancelCreate"
+							>Annuler</button
+						>
+						<button type="submit" class="btn-primary">Créer</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<script src="js/lobby.js"></script>
+	</body>
+</html>
