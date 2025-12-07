@@ -8,10 +8,12 @@ const GAME_CONSTANTS = {
 	PLAYER_COLLISION_RADIUS: 0.5,
 	STRUCTURE_DEFAULT_COLLISION_RADIUS: 4,
 	RESPAWN_TIME_MS: 5000,
-	MINION_SPAWN_INTERVAL: 30, // seconds between waves
-	MINION_FIRST_SPAWN_DELAY: 10, // seconds until first spawn
+	MINION_SPAWN_INTERVAL: 60, // seconds between waves
+	MINION_FIRST_SPAWN_DELAY: 20, // seconds until first spawn
 	MINION_WAVE_SIZE: 5, // minions per wave per team
 	MINION_COLLISION_RADIUS: 0.3,
+	MINION_AVOIDANCE_STRENGTH: 0.1, // Increased strength
+	MINION_TANGENTIAL_STRENGTH: 0.1, // Force to go around
 };
 
 // Map Configuration
@@ -65,6 +67,7 @@ const MAP_CONFIG = {
 			rotation: { x: 0, y: 45, z: 0 },
 			scale: { x: 10, y: 10, z: 10 },
 			collisionRadius: 4,
+			lv: 1,
 		},
 		BaseTeamB: {
 			x: 25,
@@ -76,6 +79,7 @@ const MAP_CONFIG = {
 			rotation: { x: 0, y: -135, z: 0 },
 			scale: { x: 10, y: 10, z: 10 },
 			collisionRadius: 4,
+			lv: 1,
 		},
 	},
 };
