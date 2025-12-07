@@ -137,6 +137,21 @@ class RoomManager {
 
         // Remove from game instance if playing
         if (room.status === 'playing' && room.game) {
+            const gamePlayer = room.game.players.get(playerId);
+            if (gamePlayer && !gamePlayer.statsUpdated) {
+                const { updateUserStats } = require("../database.js");
+                updateUserStats(playerId, {
+                    played: 1,
+                    unfinished: 1,
+                    xp: gamePlayer.sessionXp || 0
+                }).then(() => {
+                    console.log(`[Rooms] Stats updated for leaver ${gamePlayer.name}`);
+                }).catch(err => {
+                    console.error(`[Rooms] Failed to update stats for leaver ${gamePlayer.name}:`, err);
+                });
+                gamePlayer.statsUpdated = true;
+            }
+
             if (room.game.removePlayer(playerId)) {
                 leftGame = true;
                 console.log(`[Rooms] Player ${playerId} removed from game in room ${roomId}`);
@@ -207,6 +222,7 @@ class RoomManager {
 
         // Create game instance for this room
         const Game = require('./game.js');
+        const { updateUserStats } = require("../database.js");
         room.game = new Game();
 
         // Start the game (initializes minion spawning, etc.)

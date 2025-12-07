@@ -24,6 +24,20 @@ let db = new sqlite3.Database(DB_PATH, (err) => {
 				} else {
 					console.log("Users table created or already exists.");
 
+					const checkCols = [
+						"games_played",
+						"games_won",
+						"games_lost",
+						"games_unfinished",
+						"total_xp"
+					];
+
+					checkCols.forEach(col => {
+						db.run(`ALTER TABLE users ADD COLUMN ${col} INTEGER DEFAULT 0`, (err) => {
+							// Ignore error if column exists
+						});
+					});
+
 					const os = require("os");
 					const interfaces = os.networkInterfaces();
 					const port = process.env.PORT || 8080;
@@ -59,7 +73,7 @@ async function createUser(username, email, password) {
 	const hashedPassword = await bcrypt.hash(password, saltRounds);
 	return new Promise((resolve, reject) => {
 		db.run(
-			`INSERT INTO users (username, email, password) VALUES (?, ?, ?)`,
+			`INSERT INTO users (username, email, password, games_played, games_won, games_lost, games_unfinished, total_xp) VALUES (?, ?, ?, 0, 0, 0, 0, 0)`,
 			[username, email, hashedPassword],
 			function (err) {
 				if (err) {
@@ -98,6 +112,7 @@ module.exports = {
 	findUserByUsername,
 	bcrypt,
 	updateUserLevel,
+	updateUserStats
 };
 
 function updateUserLevel(userId, newLevel) {
@@ -115,5 +130,53 @@ function updateUserLevel(userId, newLevel) {
 				}
 			}
 		);
+	});
+}
+
+function updateUserStats(userId, stats) {
+	return new Promise((resolve, reject) => {
+		const { played, won, lost, unfinished, xp } = stats;
+
+		let query = "UPDATE users SET ";
+		let params = [];
+		let updates = [];
+
+		if (played) {
+			updates.push("games_played = games_played + ?");
+			params.push(played);
+		}
+		if (won) {
+			updates.push("games_won = games_won + ?");
+			params.push(won);
+		}
+		if (lost) {
+			updates.push("games_lost = games_lost + ?");
+			params.push(lost);
+		}
+		if (unfinished) {
+			updates.push("games_unfinished = games_unfinished + ?");
+			params.push(unfinished);
+		}
+		if (xp) {
+			updates.push("total_xp = total_xp + ?");
+			params.push(xp);
+		}
+
+		if (updates.length === 0) {
+			return resolve({ id: userId, message: "No updates" });
+		}
+
+		query += updates.join(", ") + " WHERE id = ?";
+		params.push(userId);
+
+		db.run(query, params, function (err) {
+			if (err) {
+				reject(err);
+			} else if (this.changes === 0) {
+				reject(new Error("User not found or no changes made."));
+			} else {
+				resolve({ id: userId, statsUpdated: true });
+			}
+		});
 	});
 }

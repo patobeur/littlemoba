@@ -2,7 +2,7 @@ const characters = require("./characters.js");
 const skills = require("./skills.js");
 const config = require("./config.js");
 const { GAME_CONSTANTS } = require("./config.js");
-const { updateUserLevel } = require("../database.js");
+const { updateUserLevel, updateUserStats } = require("../database.js");
 const MinionManager = require("../minions/minion-manager.js");
 
 class Game {
@@ -86,6 +86,7 @@ class Game {
             faction: faction,
             level: msg.level || 1,
             xp: 0,
+            sessionXp: 0,
             maxXp: 100,
             isDead: false,
             respawnTime: null,
@@ -483,6 +484,25 @@ class Game {
                                         faction: p.faction
                                     }));
 
+                                    // Update stats for all players
+                                    for (const p of this.players.values()) {
+                                        if (p.statsUpdated) continue;
+
+                                        const isWinner = p.faction === winningTeam;
+                                        updateUserStats(p.id, {
+                                            played: 1,
+                                            won: isWinner ? 1 : 0,
+                                            lost: isWinner ? 0 : 1,
+                                            xp: p.sessionXp || 0
+                                        }).then(() => {
+                                            console.log(`[Game] Stats updated for player ${p.name}`);
+                                        }).catch(err => {
+                                            console.error(`[Game] Failed to update stats for player ${p.name}:`, err);
+                                        });
+
+                                        p.statsUpdated = true;
+                                    }
+
                                     // Create game-over event
                                     events.push({
                                         type: "game-over",
@@ -519,6 +539,7 @@ class Game {
         if (!player) return;
 
         player.xp += xpGain;
+        player.sessionXp = (player.sessionXp || 0) + xpGain;
         console.log(`[Game] Player ${player.id} gained ${xpGain} XP`);
 
         // Check Level Up
