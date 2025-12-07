@@ -24,7 +24,8 @@ class Game {
                 this.structures[key] = {
                     ...str,
                     maxHp: str.hp, // Store max HP
-                    isDead: false
+                    isDead: false,
+                    level: 1 // Base level starts at 1
                 };
             }
         }
@@ -37,6 +38,14 @@ class Game {
     startGame() {
         this.minionManager.startGame();
         console.log("[Game] Game started, minion spawning initialized");
+    }
+
+    stopGame() {
+        console.log("[Game] Stopping game, cleaning up...");
+        this.isGameOver = true;
+        this.minionManager.stopGame();
+        this.players.clear();
+        this.projectiles = [];
     }
 
     addPlayer(id, msg) {
@@ -89,43 +98,50 @@ class Game {
 
     updatePlayer(id, msg) {
         const p = this.players.get(id);
-        if (!p) return null;
-        if (p.isDead) return p; // Prevent movement if dead
+        if (!p) return;
 
-        p.x = +msg.x || 0;
-        p.y = +msg.y || 0.5;
-        p.z = +msg.z || 0;
-        p.rotY = +msg.rotY || 0;
+        // Update position and rotation
+        if (msg.x !== undefined) p.x = msg.x;
+        if (msg.y !== undefined) p.y = msg.y;
+        if (msg.z !== undefined) p.z = msg.z;
+        if (msg.rotY !== undefined) p.rotY = msg.rotY;
+
         p.ts = Date.now();
         return p;
     }
 
-    removePlayer(id) {
-        return this.players.delete(id);
-    }
-
-    setPlayerDisconnected(id, isDisconnected) {
+    setPlayerDisconnected(id, disconnected) {
         const p = this.players.get(id);
         if (p) {
-            p.disconnected = isDisconnected;
+            p.disconnected = disconnected;
+        }
+    }
+
+    getPlayers() {
+        // Return object map for websocket
+        const playersObj = {};
+        for (const [id, p] of this.players) {
+            playersObj[id] = p;
+        }
+        return playersObj;
+    }
+
+    getStructures() {
+        return this.structures;
+    }
+
+    removePlayer(id) {
+        // If game is in progress, mark as disconnected instead of checking status here
+        // The room manager calls this. If player leaves, we can remove them.
+        // But for gameplay consistency, maybe keep them as disconnected body?
+        // For now, simple removal.
+        const p = this.players.get(id);
+        if (p) {
+            p.disconnected = true;
+            // return true to indicate player was in game
             return true;
         }
         return false;
-    }
-
-    addProjectile(shooterId, x, y, z, angle) {
-        const shooter = this.players.get(shooterId);
-        if (shooter && shooter.isDead) return; // Prevent shooting if dead
-
-        this.projectiles.push({
-            shooterId,
-            x,
-            y,
-            z,
-            vx: Math.sin(angle),
-            vz: Math.cos(angle),
-            distTraveled: 0,
-        });
     }
 
     update(dt) {
@@ -152,14 +168,6 @@ class Game {
                     p.rotY = Math.atan2(dx, dz);
                     p.ts = Date.now();
 
-                    // We need to broadcast this movement, but update() returns events.
-                    // We can add a special event or just rely on the fact that we don't usually broadcast position from update()
-                    // The server usually trusts clients. But here server drives.
-                    // We need to emit a 'player-moved' event or similar if we want clients to see it smoothly.
-                    // However, the current architecture relies on clients sending 'state'.
-                    // We need to inject a state update event.
-
-                    // Let's add a custom event type for server-driven movement
                     events.push({
                         type: "server-player-move",
                         id: p.id,
@@ -241,40 +249,7 @@ class Game {
                     const attacker = this.players.get(p.lastAttackerId);
                     if (attacker && attacker.faction !== p.faction) {
                         const xpGain = 50 * p.level;
-                        attacker.xp += xpGain;
-                        console.log(`[Game] Player ${attacker.id} gained ${xpGain} XP`);
-
-                        // Check Level Up
-                        let leveledUp = false;
-                        while (attacker.xp >= attacker.maxXp) {
-                            attacker.xp -= attacker.maxXp;
-                            attacker.level++;
-                            leveledUp = true;
-                            attacker.maxXp = attacker.level * 100;
-                            attacker.health = attacker.maxHealth; // Heal on level up? Maybe.
-                            attacker.mana = attacker.maxMana;
-                            console.log(`[Game] Player ${attacker.id} leveled up to ${attacker.level}!`);
-                        }
-
-                        if (leveledUp) {
-                            updateUserLevel(attacker.id, attacker.level)
-                                .then(() => console.log(`[Database] Level for user ${attacker.id} updated to ${attacker.level}.`))
-                                .catch(err => console.error(`[Database] Error updating level for user ${attacker.id}:`, err));
-
-                            events.push({
-                                type: "level-up",
-                                id: attacker.id,
-                                level: attacker.level,
-                            });
-                        }
-
-                        events.push({
-                            type: "player-xp",
-                            id: attacker.id,
-                            xp: attacker.xp,
-                            maxXp: attacker.maxXp,
-                            level: attacker.level
-                        });
+                        this.addXpToPlayer(attacker.id, xpGain, events);
                     }
                 }
             }
@@ -415,9 +390,33 @@ class Game {
                                 isDead: damageResult.isDead
                             });
 
-                            // If minion died, clean up its projectiles
+                            // If minion died, clean up its projectiles and give XP to killer
                             if (damageResult.isDead) {
                                 this.minionManager.cleanupMinionProjectiles(minion.id, this.projectiles);
+
+                                // Give XP to killer if it's a player
+                                if (!shooterIsMinion) {
+                                    console.log(`[Game Debug] Minion ${minion.id} killed by player ${p.shooterId}. Checking XP logic...`);
+                                    try {
+                                        const minionsData = require("./minions.js");
+                                        // xpRewardedPerLv is at the root of minionsData
+
+                                        if (minionsData.xpRewardedPerLv) {
+                                            // Level 1 minion gives index 0 reward
+                                            const minionLevel = minion.level || 1;
+                                            const rewardIndex = Math.min(minionLevel - 1, minionsData.xpRewardedPerLv.length - 1);
+                                            const xpReward = minionsData.xpRewardedPerLv[Math.max(0, rewardIndex)];
+
+                                            console.log(`[Game Debug] Minion Level: ${minionLevel}, RewardIndex: ${rewardIndex}, XP Reward: ${xpReward}`);
+
+                                            this.addXpToPlayer(p.shooterId, xpReward, events);
+                                        } else {
+                                            console.error("[Game Debug] xpRewardedPerLv not found in minions.js");
+                                        }
+                                    } catch (err) {
+                                        console.error("[Game Debug] Error in XP logic:", err);
+                                    }
+                                }
                             }
                         }
                         break;
@@ -431,8 +430,6 @@ class Game {
                     if (str.isDead) continue;
 
                     // Check faction (don't hit friendly bases)
-                    // Assuming BaseTeamA is for Team A (blue) and BaseTeamB is for Team B (red)
-                    // If shooter is blue, they shouldn't hit BaseTeamA
                     let isFriendly = false;
                     if (shooter.faction === "blue" && key === "BaseTeamA") isFriendly = true;
                     if (shooter.faction === "red" && key === "BaseTeamB") isFriendly = true;
@@ -517,35 +514,70 @@ class Game {
         return events;
     }
 
-    /**
-     * Stop the game and cleanup minions
-     */
-    stopGame() {
-        console.log("[Game] Stopping game, cleaning up...");
-        if (this.minionManager) {
-            this.minionManager.stopGame();
+    addXpToPlayer(playerId, xpGain, events) {
+        const player = this.players.get(playerId);
+        if (!player) return;
+
+        player.xp += xpGain;
+        console.log(`[Game] Player ${player.id} gained ${xpGain} XP`);
+
+        // Check Level Up
+        let leveledUp = false;
+        while (player.xp >= player.maxXp) {
+            player.xp -= player.maxXp;
+            player.level++;
+            leveledUp = true;
+            player.maxXp = player.level * 100;
+            player.health = player.maxHealth; // Full heal on level up
+            player.mana = player.maxMana;
+            console.log(`[Game] Player ${player.id} leveled up to ${player.level}!`);
         }
-        // Clear projectiles
-        this.projectiles = [];
+
+        if (leveledUp) {
+            updateUserLevel(player.id, player.level)
+                .then(() => console.log(`[Database] Level for user ${player.id} updated to ${player.level}.`))
+                .catch(err => console.error(`[Database] Error updating level for user ${player.id}:`, err));
+
+            events.push({
+                type: "level-up",
+                id: player.id,
+                level: player.level,
+            });
+
+            // Check Base Level Up
+            const baseKey = player.faction === "blue" ? "BaseTeamA" : "BaseTeamB";
+            const base = this.structures[baseKey];
+            if (base && !base.isDead && base.level < 18 && player.level > base.level) {
+                base.level = Math.min(player.level, 18);
+                console.log(`[Game] ${baseKey} leveled up to ${base.level}!`);
+            }
+        }
+
+        events.push({
+            type: "player-xp",
+            id: player.id,
+            xp: player.xp,
+            maxXp: player.maxXp,
+            level: player.level
+        });
     }
 
-    getPlayers() {
-        return Object.fromEntries(this.players);
-    }
+    addProjectile(shooterId, x, y, z, angle) {
+        const shooter = this.players.get(shooterId);
+        if (shooter && shooter.isDead) return; // Prevent shooting if dead
 
-    getPlayersList() {
-        return Array.from(this.players.values()).map((p) => ({
-            name: p.name,
-            color: p.color,
-            character: p.character,
-        }));
-    }
+        let vx = Math.sin(angle);
+        let vz = Math.cos(angle);
 
-    getStructures() {
-        return this.structures;
+        this.projectiles.push({
+            shooterId,
+            x,
+            z,
+            vx,
+            vz,
+            distTraveled: 0
+        });
     }
 }
 
-// Export the class itself, not an instance
-// Each room will create its own Game instance
 module.exports = Game;
