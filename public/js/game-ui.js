@@ -150,15 +150,15 @@ export function initGameUI(onModeChange) {
 				if (statSpeed) {
 					statSpeed.textContent = Array.isArray(charStats.speed)
 						? charStats.speed[
-						Math.min(levelIndex, charStats.speed.length - 1)
-						]
+								Math.min(levelIndex, charStats.speed.length - 1)
+						  ]
 						: charStats.speed || "-";
 				}
 				if (statRange) {
 					statRange.textContent = Array.isArray(charStats.hitDistance)
 						? charStats.hitDistance[
-						Math.min(levelIndex, charStats.hitDistance.length - 1)
-						]
+								Math.min(levelIndex, charStats.hitDistance.length - 1)
+						  ]
 						: charStats.hitDistance || "-";
 				}
 
@@ -166,18 +166,18 @@ export function initGameUI(onModeChange) {
 				if (statAtk) {
 					statAtk.textContent = Array.isArray(charStats.autoAttackDamage)
 						? charStats.autoAttackDamage[
-						Math.min(
-							levelIndex,
-							charStats.autoAttackDamage.length - 1
-						)
-						]
+								Math.min(
+									levelIndex,
+									charStats.autoAttackDamage.length - 1
+								)
+						  ]
 						: charStats.autoAttackDamage || "-";
 				}
 				if (statAtkCd) {
 					statAtkCd.textContent = Array.isArray(charStats.autoAttackCd)
 						? charStats.autoAttackCd[
-						Math.min(levelIndex, charStats.autoAttackCd.length - 1)
-						]
+								Math.min(levelIndex, charStats.autoAttackCd.length - 1)
+						  ]
 						: charStats.autoAttackCd || "-";
 				}
 				if (statHpRegen) {
@@ -185,11 +185,11 @@ export function initGameUI(onModeChange) {
 						charStats.HealthRegeneration
 					)
 						? charStats.HealthRegeneration[
-						Math.min(
-							levelIndex,
-							charStats.HealthRegeneration.length - 1
-						)
-						]
+								Math.min(
+									levelIndex,
+									charStats.HealthRegeneration.length - 1
+								)
+						  ]
 						: charStats.HealthRegeneration || "-";
 				}
 				if (statMpRegen) {
@@ -197,11 +197,11 @@ export function initGameUI(onModeChange) {
 						charStats.manaRegeneration
 					)
 						? charStats.manaRegeneration[
-						Math.min(
-							levelIndex,
-							charStats.manaRegeneration.length - 1
-						)
-						]
+								Math.min(
+									levelIndex,
+									charStats.manaRegeneration.length - 1
+								)
+						  ]
 						: charStats.manaRegeneration || "-";
 				}
 				if (statPhysArmor) {
@@ -209,15 +209,15 @@ export function initGameUI(onModeChange) {
 						charStats.physiqueArmor
 					)
 						? charStats.physiqueArmor[
-						Math.min(levelIndex, charStats.physiqueArmor.length - 1)
-						]
+								Math.min(levelIndex, charStats.physiqueArmor.length - 1)
+						  ]
 						: charStats.physiqueArmor || "-";
 				}
 				if (statMagArmor) {
 					statMagArmor.textContent = Array.isArray(charStats.magicArmor)
 						? charStats.magicArmor[
-						Math.min(levelIndex, charStats.magicArmor.length - 1)
-						]
+								Math.min(levelIndex, charStats.magicArmor.length - 1)
+						  ]
 						: charStats.magicArmor || "-";
 				}
 			}
@@ -281,7 +281,9 @@ export function initGameUI(onModeChange) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${bluePlayers.map(p => `
+                                    ${bluePlayers
+													.map(
+														(p) => `
                                         <tr style="border-bottom:1px solid #26324a;">
                                             <td style="padding:5px; text-align:left;">
                                                 <div style="font-weight:bold;">${p.name}</div>
@@ -294,7 +296,9 @@ export function initGameUI(onModeChange) {
                                             <td style="padding:5px; text-align:center;">${p.damageDealtToMinions}</td>
                                             <td style="padding:5px; text-align:center;">${p.minionsKilled}</td>
                                         </tr>
-                                    `).join('')}
+                                    `
+													)
+													.join("")}
                                 </tbody>
                             </table>
                         </div>
@@ -315,7 +319,9 @@ export function initGameUI(onModeChange) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${redPlayers.map(p => `
+                                    ${redPlayers
+													.map(
+														(p) => `
                                         <tr style="border-bottom:1px solid #26324a;">
                                             <td style="padding:5px; text-align:left;">
                                                 <div style="font-weight:bold;">${p.name}</div>
@@ -328,7 +334,9 @@ export function initGameUI(onModeChange) {
                                             <td style="padding:5px; text-align:center;">${p.damageDealtToMinions}</td>
                                             <td style="padding:5px; text-align:center;">${p.minionsKilled}</td>
                                         </tr>
-                                    `).join('')}
+                                    `
+													)
+													.join("")}
                                 </tbody>
                             </table>
                         </div>
@@ -341,7 +349,7 @@ export function initGameUI(onModeChange) {
             `;
 
 			// Auto-redirect timer
-			let countdown = 25;
+			let countdown = 60;
 			const countdownEl = document.getElementById("countdown");
 			const returnBtn = document.getElementById("return-lobby-btn");
 
