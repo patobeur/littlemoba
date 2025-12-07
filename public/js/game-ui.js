@@ -150,15 +150,15 @@ export function initGameUI(onModeChange) {
 				if (statSpeed) {
 					statSpeed.textContent = Array.isArray(charStats.speed)
 						? charStats.speed[
-								Math.min(levelIndex, charStats.speed.length - 1)
-						  ]
+						Math.min(levelIndex, charStats.speed.length - 1)
+						]
 						: charStats.speed || "-";
 				}
 				if (statRange) {
 					statRange.textContent = Array.isArray(charStats.hitDistance)
 						? charStats.hitDistance[
-								Math.min(levelIndex, charStats.hitDistance.length - 1)
-						  ]
+						Math.min(levelIndex, charStats.hitDistance.length - 1)
+						]
 						: charStats.hitDistance || "-";
 				}
 
@@ -166,18 +166,18 @@ export function initGameUI(onModeChange) {
 				if (statAtk) {
 					statAtk.textContent = Array.isArray(charStats.autoAttackDamage)
 						? charStats.autoAttackDamage[
-								Math.min(
-									levelIndex,
-									charStats.autoAttackDamage.length - 1
-								)
-						  ]
+						Math.min(
+							levelIndex,
+							charStats.autoAttackDamage.length - 1
+						)
+						]
 						: charStats.autoAttackDamage || "-";
 				}
 				if (statAtkCd) {
 					statAtkCd.textContent = Array.isArray(charStats.autoAttackCd)
 						? charStats.autoAttackCd[
-								Math.min(levelIndex, charStats.autoAttackCd.length - 1)
-						  ]
+						Math.min(levelIndex, charStats.autoAttackCd.length - 1)
+						]
 						: charStats.autoAttackCd || "-";
 				}
 				if (statHpRegen) {
@@ -185,11 +185,11 @@ export function initGameUI(onModeChange) {
 						charStats.HealthRegeneration
 					)
 						? charStats.HealthRegeneration[
-								Math.min(
-									levelIndex,
-									charStats.HealthRegeneration.length - 1
-								)
-						  ]
+						Math.min(
+							levelIndex,
+							charStats.HealthRegeneration.length - 1
+						)
+						]
 						: charStats.HealthRegeneration || "-";
 				}
 				if (statMpRegen) {
@@ -197,11 +197,11 @@ export function initGameUI(onModeChange) {
 						charStats.manaRegeneration
 					)
 						? charStats.manaRegeneration[
-								Math.min(
-									levelIndex,
-									charStats.manaRegeneration.length - 1
-								)
-						  ]
+						Math.min(
+							levelIndex,
+							charStats.manaRegeneration.length - 1
+						)
+						]
 						: charStats.manaRegeneration || "-";
 				}
 				if (statPhysArmor) {
@@ -209,15 +209,15 @@ export function initGameUI(onModeChange) {
 						charStats.physiqueArmor
 					)
 						? charStats.physiqueArmor[
-								Math.min(levelIndex, charStats.physiqueArmor.length - 1)
-						  ]
+						Math.min(levelIndex, charStats.physiqueArmor.length - 1)
+						]
 						: charStats.physiqueArmor || "-";
 				}
 				if (statMagArmor) {
 					statMagArmor.textContent = Array.isArray(charStats.magicArmor)
 						? charStats.magicArmor[
-								Math.min(levelIndex, charStats.magicArmor.length - 1)
-						  ]
+						Math.min(levelIndex, charStats.magicArmor.length - 1)
+						]
 						: charStats.magicArmor || "-";
 				}
 			}
@@ -264,35 +264,73 @@ export function initGameUI(onModeChange) {
                         Victoire - Équipe ${teamName} !
                     </h1>
                     
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:30px;">
+                    <div style="display:flex; flex-direction:column; gap:20px; margin-bottom:30px; overflow-y:auto; max-height:60vh;">
                         <!-- Blue Team -->
                         <div style="background:#0D1527; padding:15px; border-radius:8px; border:2px solid #4A90E2;">
                             <h3 style="color:#4A90E2; margin:0 0 10px 0; font-size:18px; text-align:center;">Équipe Bleue</h3>
-                            ${bluePlayers
-											.map(
-												(p) => `
-                                <div style="background:#0B1020; padding:8px; margin:5px 0; border-radius:4px; font-size:14px;">
-                                    <div style="color:#eaeefb; font-weight:bold;">${p.name}</div>
-                                    <div style="color:#888; font-size:12px;">${p.character} - Niv. ${p.level}</div>
-                                </div>
-                            `
-											)
-											.join("")}
+                            <table style="width:100%; border-collapse:collapse; color:#eaeefb; font-size:12px;">
+                                <thead style="background:#0B1020; color:#888;">
+                                    <tr>
+                                        <th style="padding:5px; text-align:left;">Joueur</th>
+                                        <th style="padding:5px;">K</th>
+                                        <th style="padding:5px;">A</th>
+                                        <th style="padding:5px;">Dmg (P)</th>
+                                        <th style="padding:5px;">Dmg (B)</th>
+                                        <th style="padding:5px;">Dmg (M)</th>
+                                        <th style="padding:5px;">CS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${bluePlayers.map(p => `
+                                        <tr style="border-bottom:1px solid #26324a;">
+                                            <td style="padding:5px; text-align:left;">
+                                                <div style="font-weight:bold;">${p.name}</div>
+                                                <div style="font-size:10px; color:#888;">${p.character} (Lvl ${p.level})</div>
+                                            </td>
+                                            <td style="padding:5px; text-align:center;">${p.kills}</td>
+                                            <td style="padding:5px; text-align:center;">${p.assists}</td>
+                                            <td style="padding:5px; text-align:center;">${p.damageDealtToPlayers}</td>
+                                            <td style="padding:5px; text-align:center;">${p.damageDealtToBase}</td>
+                                            <td style="padding:5px; text-align:center;">${p.damageDealtToMinions}</td>
+                                            <td style="padding:5px; text-align:center;">${p.minionsKilled}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
                         </div>
                         
                         <!-- Red Team -->
                         <div style="background:#0D1527; padding:15px; border-radius:8px; border:2px solid #E74C3C;">
                             <h3 style="color:#E74C3C; margin:0 0 10px 0; font-size:18px; text-align:center;">Équipe Rouge</h3>
-                            ${redPlayers
-											.map(
-												(p) => `
-                                <div style="background:#0B1020; padding:8px; margin:5px 0; border-radius:4px; font-size:14px;">
-                                    <div style="color:#eaeefb; font-weight:bold;">${p.name}</div>
-                                    <div style="color:#888; font-size:12px;">${p.character} - Niv. ${p.level}</div>
-                                </div>
-                            `
-											)
-											.join("")}
+                           <table style="width:100%; border-collapse:collapse; color:#eaeefb; font-size:12px;">
+                                <thead style="background:#0B1020; color:#888;">
+                                    <tr>
+                                        <th style="padding:5px; text-align:left;">Joueur</th>
+                                        <th style="padding:5px;">K</th>
+                                        <th style="padding:5px;">A</th>
+                                        <th style="padding:5px;">Dmg (P)</th>
+                                        <th style="padding:5px;">Dmg (B)</th>
+                                        <th style="padding:5px;">Dmg (M)</th>
+                                        <th style="padding:5px;">CS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${redPlayers.map(p => `
+                                        <tr style="border-bottom:1px solid #26324a;">
+                                            <td style="padding:5px; text-align:left;">
+                                                <div style="font-weight:bold;">${p.name}</div>
+                                                <div style="font-size:10px; color:#888;">${p.character} (Lvl ${p.level})</div>
+                                            </td>
+                                            <td style="padding:5px; text-align:center;">${p.kills}</td>
+                                            <td style="padding:5px; text-align:center;">${p.assists}</td>
+                                            <td style="padding:5px; text-align:center;">${p.damageDealtToPlayers}</td>
+                                            <td style="padding:5px; text-align:center;">${p.damageDealtToBase}</td>
+                                            <td style="padding:5px; text-align:center;">${p.damageDealtToMinions}</td>
+                                            <td style="padding:5px; text-align:center;">${p.minionsKilled}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     

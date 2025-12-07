@@ -29,7 +29,13 @@ let db = new sqlite3.Database(DB_PATH, (err) => {
 						"games_won",
 						"games_lost",
 						"games_unfinished",
-						"total_xp"
+						"total_xp",
+						"total_kills",
+						"total_assists",
+						"total_damage_players",
+						"total_damage_base",
+						"total_damage_minions",
+						"total_minions_killed"
 					];
 
 					checkCols.forEach(col => {
@@ -73,7 +79,7 @@ async function createUser(username, email, password) {
 	const hashedPassword = await bcrypt.hash(password, saltRounds);
 	return new Promise((resolve, reject) => {
 		db.run(
-			`INSERT INTO users (username, email, password, games_played, games_won, games_lost, games_unfinished, total_xp) VALUES (?, ?, ?, 0, 0, 0, 0, 0)`,
+			`INSERT INTO users (username, email, password, games_played, games_won, games_lost, games_unfinished, total_xp, total_kills, total_assists, total_damage_players, total_damage_base, total_damage_minions, total_minions_killed) VALUES (?, ?, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)`,
 			[username, email, hashedPassword],
 			function (err) {
 				if (err) {
@@ -135,7 +141,10 @@ function updateUserLevel(userId, newLevel) {
 
 function updateUserStats(userId, stats) {
 	return new Promise((resolve, reject) => {
-		const { played, won, lost, unfinished, xp } = stats;
+		const {
+			played, won, lost, unfinished, xp,
+			kills, assists, damagePlayers, damageBase, damageMinions, minionsKilled
+		} = stats;
 
 		let query = "UPDATE users SET ";
 		let params = [];
@@ -160,6 +169,31 @@ function updateUserStats(userId, stats) {
 		if (xp) {
 			updates.push("total_xp = total_xp + ?");
 			params.push(xp);
+		}
+		// New stats
+		if (kills) {
+			updates.push("total_kills = total_kills + ?");
+			params.push(kills);
+		}
+		if (assists) {
+			updates.push("total_assists = total_assists + ?");
+			params.push(assists);
+		}
+		if (damagePlayers) {
+			updates.push("total_damage_players = total_damage_players + ?");
+			params.push(damagePlayers);
+		}
+		if (damageBase) {
+			updates.push("total_damage_base = total_damage_base + ?");
+			params.push(damageBase);
+		}
+		if (damageMinions) {
+			updates.push("total_damage_minions = total_damage_minions + ?");
+			params.push(damageMinions);
+		}
+		if (minionsKilled) {
+			updates.push("total_minions_killed = total_minions_killed + ?");
+			params.push(minionsKilled);
 		}
 
 		if (updates.length === 0) {

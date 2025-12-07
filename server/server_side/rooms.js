@@ -143,7 +143,13 @@ class RoomManager {
                 updateUserStats(playerId, {
                     played: 1,
                     unfinished: 1,
-                    xp: gamePlayer.sessionXp || 0
+                    xp: gamePlayer.sessionXp || 0,
+                    kills: gamePlayer.kills || 0,
+                    assists: gamePlayer.assists || 0,
+                    damagePlayers: gamePlayer.damageDealtToPlayers || 0,
+                    damageBase: gamePlayer.damageDealtToBase || 0,
+                    damageMinions: gamePlayer.damageDealtToMinions || 0,
+                    minionsKilled: gamePlayer.minionsKilled || 0
                 }).then(() => {
                     console.log(`[Rooms] Stats updated for leaver ${gamePlayer.name}`);
                 }).catch(err => {

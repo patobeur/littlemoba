@@ -87,6 +87,16 @@ class Game {
             level: msg.level || 1,
             xp: 0,
             sessionXp: 0,
+
+            // Detailed Session Stats
+            kills: 0,
+            assists: 0,
+            damageDealtToPlayers: 0,
+            damageDealtToBase: 0,
+            damageDealtToMinions: 0,
+            minionsKilled: 0,
+            damageHistory: [], // Array of { attackerId, timestamp }
+
             maxXp: 100,
             isDead: false,
             respawnTime: null,
@@ -245,13 +255,45 @@ class Game {
 
                 console.log(`[Game] Player ${p.id} died, respawn in ${respawnDelay / 1000}s`);
 
-                // XP Gain for Attacker
+                // XP Gain for Attacker & Kill/Assist Logic
                 if (p.lastAttackerId) {
                     const attacker = this.players.get(p.lastAttackerId);
                     if (attacker && attacker.faction !== p.faction) {
                         const xpGain = 50 * p.level;
                         this.addXpToPlayer(attacker.id, xpGain, events);
+
+                        // Increment Kills
+                        attacker.kills = (attacker.kills || 0) + 1;
+                        console.log(`[Game] Player ${attacker.name} killed ${p.name} (Kills: ${attacker.kills})`);
                     }
+                }
+
+                // Assist Logic
+                if (p.damageHistory && p.damageHistory.length > 0) {
+                    const assistWindow = 10000; // 10 seconds
+                    const validAssisters = new Set();
+                    const now = Date.now();
+
+                    p.damageHistory.forEach(record => {
+                        if (now - record.timestamp <= assistWindow && record.attackerId !== p.lastAttackerId) {
+                            const assister = this.players.get(record.attackerId);
+                            if (assister && assister.faction !== p.faction) {
+                                validAssisters.add(record.attackerId);
+                            }
+                        }
+                    });
+
+                    validAssisters.forEach(assisterId => {
+                        const assister = this.players.get(assisterId);
+                        if (assister) {
+                            assister.assists = (assister.assists || 0) + 1;
+                            console.log(`[Game] Player ${assister.name} assisted in killing ${p.name} (Assists: ${assister.assists})`);
+
+                            // Optional: XP for assist? (e.g., 25 * p.level)
+                            const xpGain = 25 * p.level;
+                            this.addXpToPlayer(assister.id, xpGain, events);
+                        }
+                    });
                 }
             }
 
@@ -272,6 +314,7 @@ class Game {
                 p.isDead = false;
                 p.respawnTime = null;
                 p.lastAttackerId = null; // Reset attacker
+                p.damageHistory = []; // Clear damage history
 
                 events.push({
                     type: "player-respawn",
@@ -334,6 +377,18 @@ class Game {
                     } else {
                         const charStats = characters.chars[shooter.character];
                         damage = charStats ? charStats.autoAttackDamage[0] : 10;
+
+                        // Update player damage stats
+                        const shooterPlayer = this.players.get(p.shooterId);
+                        if (shooterPlayer) {
+                            shooterPlayer.damageDealtToPlayers = (shooterPlayer.damageDealtToPlayers || 0) + damage;
+
+                            // Add to target's damage history for assists
+                            player.damageHistory.push({
+                                attackerId: p.shooterId,
+                                timestamp: Date.now()
+                            });
+                        }
                     }
 
                     player.health -= damage;
@@ -374,6 +429,12 @@ class Game {
                         } else {
                             const charStats = characters.chars[shooter.character];
                             damage = charStats ? charStats.autoAttackDamage[0] : 10;
+
+                            // Update minion damage stats
+                            const shooterPlayer = this.players.get(p.shooterId);
+                            if (shooterPlayer) {
+                                shooterPlayer.damageDealtToMinions = (shooterPlayer.damageDealtToMinions || 0) + damage;
+                            }
                         }
 
                         const damageResult = this.minionManager.damageMinion(minion.id, damage, p.shooterId);
@@ -397,6 +458,11 @@ class Game {
 
                                 // Give XP to killer if it's a player
                                 if (!shooterIsMinion) {
+                                    // Track minion kill
+                                    const shooterPlayer = this.players.get(p.shooterId);
+                                    if (shooterPlayer) {
+                                        shooterPlayer.minionsKilled = (shooterPlayer.minionsKilled || 0) + 1;
+                                    }
                                     console.log(`[Game Debug] Minion ${minion.id} killed by player ${p.shooterId}. Checking XP logic...`);
                                     try {
                                         const minionsData = require("./minions.js");
@@ -453,6 +519,14 @@ class Game {
                         } else {
                             const charStats = characters.chars[shooter.character];
                             damage = charStats ? charStats.autoAttackDamage[0] : 10;
+
+                            // Update base damage stats
+                            const shooterPlayer = this.players.get(p.shooterId);
+                            if (shooterPlayer) {
+                                if (key === "BaseTeamA" || key === "BaseTeamB") {
+                                    shooterPlayer.damageDealtToBase = (shooterPlayer.damageDealtToBase || 0) + damage;
+                                }
+                            }
                         }
 
                         str.hp -= damage;
@@ -481,7 +555,13 @@ class Game {
                                         name: p.name,
                                         character: p.character,
                                         level: p.level,
-                                        faction: p.faction
+                                        faction: p.faction,
+                                        kills: p.kills || 0,
+                                        assists: p.assists || 0,
+                                        damageDealtToPlayers: p.damageDealtToPlayers || 0,
+                                        damageDealtToBase: p.damageDealtToBase || 0,
+                                        damageDealtToMinions: p.damageDealtToMinions || 0,
+                                        minionsKilled: p.minionsKilled || 0
                                     }));
 
                                     // Update stats for all players
@@ -493,7 +573,13 @@ class Game {
                                             played: 1,
                                             won: isWinner ? 1 : 0,
                                             lost: isWinner ? 0 : 1,
-                                            xp: p.sessionXp || 0
+                                            xp: p.sessionXp || 0,
+                                            kills: p.kills || 0,
+                                            assists: p.assists || 0,
+                                            damagePlayers: p.damageDealtToPlayers || 0,
+                                            damageBase: p.damageDealtToBase || 0,
+                                            damageMinions: p.damageDealtToMinions || 0,
+                                            minionsKilled: p.minionsKilled || 0
                                         }).then(() => {
                                             console.log(`[Game] Stats updated for player ${p.name}`);
                                         }).catch(err => {
