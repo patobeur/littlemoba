@@ -12,6 +12,7 @@ class Game {
         this.nextId = 1;
         this.PROJECTILE_SPEED = GAME_CONSTANTS.PROJECTILE_SPEED;
         this.PROJECTILE_RANGE = GAME_CONSTANTS.PROJECTILE_RANGE;
+        this.isGameOver = false; // Track if game has ended
 
         // Initialize minion manager
         this.minionManager = new MinionManager();
@@ -129,6 +130,9 @@ class Game {
 
     update(dt) {
         const events = [];
+
+        // Don't update if game is over
+        if (this.isGameOver) return events;
 
         // Autonomous movement for disconnected players
         for (const p of this.players.values()) {
@@ -464,6 +468,31 @@ class Game {
                                     structureId: key,
                                     killerId: shooter.id
                                 });
+
+                                // Check if a base was destroyed (game over)
+                                if (key === "BaseTeamA" || key === "BaseTeamB") {
+                                    const winningTeam = key === "BaseTeamA" ? "red" : "blue";
+                                    console.log(`[Game] Base ${key} destroyed! Team ${winningTeam} wins!`);
+
+                                    // Mark game as over
+                                    this.isGameOver = true;
+
+                                    // Collect all player data for victory screen
+                                    const playersList = Array.from(this.players.values()).map(p => ({
+                                        id: p.id,
+                                        name: p.name,
+                                        character: p.character,
+                                        level: p.level,
+                                        faction: p.faction
+                                    }));
+
+                                    // Create game-over event
+                                    events.push({
+                                        type: "game-over",
+                                        winningTeam: winningTeam,
+                                        players: playersList
+                                    });
+                                }
                             }
                         }
 

@@ -100,8 +100,28 @@ export function handleMessage(msg) {
         case "minion-death":
             handleMinionDeath(msg);
             break;
+        case "game-over":
+            handleGameOver(msg);
+            break;
         default:
             // Unknown message type
             break;
     }
+}
+
+/**
+ * Handle game-over event
+ * @param {object} msg - Message with winningTeam and players
+ */
+function handleGameOver(msg) {
+    const { winningTeam, players } = msg;
+    console.log(`[Client] Game Over! Team ${winningTeam} wins!`);
+
+    // Get gameUI instance from game-state
+    import("./game-state.js").then(({ getGameUI }) => {
+        const gameUI = getGameUI();
+        if (gameUI && gameUI.showVictoryModal) {
+            gameUI.showVictoryModal(winningTeam, players);
+        }
+    });
 }

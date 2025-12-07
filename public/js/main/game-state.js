@@ -115,3 +115,7 @@ export function setGameUI(ui) {
 export function setPlayerColor(color) {
     playerColor = color;
 }
+
+export function getGameUI() {
+    return gameUI;
+}

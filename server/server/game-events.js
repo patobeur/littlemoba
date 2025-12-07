@@ -163,6 +163,14 @@ function setupGameLoop(roomManager, broadcastToRoom) {
                         if (e.isDead) {
                             console.log(`[Game Room ${room.id}] Minion ${e.targetId} killed by ${e.shooterType} ${e.shooterId}`);
                         }
+                    } else if (e.type === "game-over") {
+                        // Broadcast game-over to all clients
+                        console.log(`[Game Room ${room.id}] Game Over! Team ${e.winningTeam} wins!`);
+                        broadcastToRoom(room.id, {
+                            type: "game-over",
+                            winningTeam: e.winningTeam,
+                            players: e.players
+                        });
                     }
                 });
             }
