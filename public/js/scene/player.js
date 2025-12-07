@@ -161,57 +161,8 @@ export function updatePlayerHUD(
 }
 
 // REFACTORISÉ: makePlayerMesh
-// REFACTORISÉ: makePlayerMesh
 export function makePlayerMesh(name, level, hexColor, characterName) {
 	const g = new THREE.Group();
-
-	// if (characterName) {
-	//     const cachedModel = assetLoader.getModel(`character_${characterName}`);
-	//     if (cachedModel) {
-	//         // Clone the model to avoid reusing the same instance
-	//         const modelToClone = cachedModel;
-
-	//         const model = modelToClone.clone();
-	//         model.name = characterName;
-
-	//         // Reset model transformations
-	//         // model.position.set(0, 0, 0);
-	//         // model.rotation.set(0, 0, 0);
-
-	//         // Setup character model
-	//         model.scale.set(0.5, 0.5, 0.5);
-	//         // model.position.y = 0;
-
-	//         // Enable shadows
-	//         model.traverse((child) => {
-	//             if (child.isMesh) {
-	//                 child.castShadow = true;
-	//                 child.receiveShadow = true;
-	//             }
-	//         });
-
-	//         g.add(model);  // ← DÉPLACÉ ICI, avant matrixAutoUpdate
-
-	//         // Force the model to update its matrix based on parent transformations
-	//         model.matrixAutoUpdate = true;
-	//         model.updateMatrix();
-	//         g.userData.hasCharacterModel = true;
-
-	//         // Ajouter le HUD unifié
-	//         const hud = createPlayerHUD(name, level, new THREE.Color(hexColor));
-	//         g.add(hud);
-	//         g.userData.hud = hud;
-	//         g.userData.level = level;
-	//         g.userData.name = name;
-	//         g.userData.character = characterName;
-	//         g.name = name
-	//         console.log(model)
-	//         console.log(g)
-	//         console.log(g.name)
-	//         console.log(g.position)
-	//         return g;
-	//     }
-	// }
 
 	// Fallback: reste du code géométrique original
 	const body = new THREE.Mesh(
@@ -243,5 +194,38 @@ export function makePlayerMesh(name, level, hexColor, characterName) {
 	g.userData.level = level;
 	g.userData.name = name;
 
+	// if (characterName) {
+	// 	const cachedModel = assetLoader.getModel(`character_${characterName}`);
+	// 	if (cachedModel) {
+	// 		// Clone the model to avoid reusing the same instance
+	// 		const modelToClone = cachedModel;
+	// 		const model = modelToClone.clone(true);
+	// 		model.name = characterName;
+
+	// 		model.position.set(0, 0, 0);
+	// 		model.rotation.set(0, 0, 0);
+	// 		model.scale.set(0.5, 0.5, 0.5);
+	// 		model.traverse((child) => {
+	// 			if (child.isMesh) {
+	// 				child.castShadow = true;
+	// 				child.receiveShadow = true;
+	// 			}
+	// 		});
+
+	// 		// Force the model to update its matrix based on parent transformations
+	// 		model.matrixAutoUpdate = true;
+	// 		model.updateMatrix();
+	// 		g.add(model);
+	// 		g.userData.hasCharacterModel = true;
+	// 		g.userData.character = characterName;
+
+	// 		console.log("----------------------")
+	// 		console.log(name)
+	// 		console.log("----------------------")
+	// 		console.log(model)
+	// 		console.log(g)
+
+	// 	}
+	// }
 	return g;
 }
