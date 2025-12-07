@@ -39,14 +39,26 @@ export function initScene() {
     dl.position.set(2, 3, 1);
     scene.add(dl);
 
+    // Load floor texture
+    const textureLoader = new THREE.TextureLoader();
+    const floorTexture = textureLoader.load('/media/floors/floor.png');
+
+    // Configure texture for tiling
+    floorTexture.wrapS = THREE.RepeatWrapping;
+    floorTexture.wrapT = THREE.RepeatWrapping;
+    floorTexture.repeat.set(1, 1); // Adjust repetition based on grid size
+
     const plane = new THREE.Mesh(
         new THREE.PlaneGeometry(gridSize, gridSize),
-        new THREE.MeshStandardMaterial({ color: 0x0d1527 })
+        new THREE.MeshStandardMaterial({
+            map: floorTexture,
+            side: THREE.DoubleSide
+        })
     );
     plane.rotation.x = -Math.PI / 2;
     plane.userData.isGroundPlane = true; // Mark as ground plane for raycasting module
     world.add(plane);
-    world.add(new THREE.GridHelper(gridSize, gridSize, 0x335, 0x224));
+    // world.add(new THREE.GridHelper(gridSize, gridSize, 0x335, 0x224));
 
     renderer.setSize(innerWidth, innerHeight);
     updateCameraProjection();

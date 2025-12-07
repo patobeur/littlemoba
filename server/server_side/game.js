@@ -488,6 +488,18 @@ class Game {
         return events;
     }
 
+    /**
+     * Stop the game and cleanup minions
+     */
+    stopGame() {
+        console.log("[Game] Stopping game, cleaning up...");
+        if (this.minionManager) {
+            this.minionManager.stopGame();
+        }
+        // Clear projectiles
+        this.projectiles = [];
+    }
+
     getPlayers() {
         return Object.fromEntries(this.players);
     }

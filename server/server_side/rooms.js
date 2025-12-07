@@ -145,6 +145,12 @@ class RoomManager {
 
         // Delete room if empty
         if (room.isEmpty()) {
+            // Stop the game if it's running
+            if (room.status === 'playing' && room.game) {
+                console.log(`[Rooms] Room ${roomId} is now empty, stopping game...`);
+                room.game.stopGame();
+                room.game = null;
+            }
             this.rooms.delete(roomId);
             console.log(`[Rooms] Room ${roomId} deleted (empty)`);
         } else {

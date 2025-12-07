@@ -37,6 +37,13 @@ class MinionManager {
 
         if (!this.gameStartTime) return events;
 
+        // Check if there are any players in the game
+        const activePlayers = players ? (players instanceof Map ? Array.from(players.values()) : Object.values(players)) : [];
+        if (activePlayers.length === 0) {
+            // No players, don't spawn or update minions
+            return events;
+        }
+
         const currentTime = Date.now();
         const gameTime = (currentTime - this.gameStartTime) / 1000; // Convert to seconds
 
@@ -248,6 +255,25 @@ class MinionManager {
                 projectiles.splice(i, 1);
             }
         }
+    }
+
+    /**
+     * Stop the game and cleanup all minions
+     */
+    stopGame() {
+        console.log("[MinionManager] Stopping game, cleaning up minions");
+        this.gameStartTime = null;
+        this.lastSpawnTime = 0;
+        this.minions = [];
+    }
+
+    /**
+     * Reset the minion manager completely
+     */
+    reset() {
+        this.stopGame();
+        this.nextMinionId = 1;
+        console.log("[MinionManager] Reset complete");
     }
 }
 
