@@ -18,6 +18,7 @@ import { startGameLoop } from "./main/game-loop.js";
 import { assetLoader } from "./loaders/asset-loader.js";
 import { loadingScreen } from "./loaders/loading-screen.js";
 import { getRequiredAssets } from "./loaders/asset-list.js";
+import { setGameConstants } from "./client-config.js";
 
 // Verify room ID from URL
 const qs = new URLSearchParams(location.search);
@@ -61,6 +62,11 @@ async function initializeGame() {
 		// Get room data first
 		const roomRes = await fetch(`/api/rooms/${roomId}`);
 		const roomData = await roomRes.json();
+
+		// Fetch game constants
+		const configRes = await fetch('/api/config');
+		const configData = await configRes.json();
+		setGameConstants(configData);
 
 		if (!roomData.success) {
 			alert("Salle introuvable");

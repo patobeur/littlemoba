@@ -36,8 +36,7 @@ const characters = {
 			commentaire:
 				"Moonba est un tank traditionnel. Il excelle à encaisser les dégâts pour son équipe grâce à ses points de vie et armures élevés. Son rôle est d'être en première ligne pour protéger les alliés plus fragiles. En contrepartie, ses dégâts sont faibles et il est assez lent.",
 			speed: [
-				0.9, 1, 1.1, 1.2, 1.3, 1.3, 1.3, 1.3, 1.3, 1.3, 1.3, 1.3, 1.3, 1.3,
-				1.3, 1.3, 1.3, 1.3,
+				3.5, 3.6, 3.7, 3.8, 3.9, 4, 4.1, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2,
 			], // [skill lv1, lv2, ..., lv18 ]
 
 			hitDistance: [5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
@@ -91,8 +90,7 @@ const characters = {
 			commentaire:
 				"Wiko est un 'glass cannon'. Il peut infliger d'énormes dégâts à distance, mais il est très fragile. Un bon positionnement est essentiel pour survivre et maximiser son potentiel de dégâts.",
 			speed: [
-				1, 1.1, 1.2, 1.3, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4,
-				1.4, 1.4, 1.4, 1.4,
+				3.5, 3.6, 3.7, 3.8, 3.9, 4, 4.1, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2,
 			], // [skill lv1, lv2, ..., lv18 ]
 
 			hitDistance: [5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
@@ -148,8 +146,7 @@ const characters = {
 			commentaire:
 				"Squazzzza est un support polyvalent qui peut contrôler les ennemis et aider ses alliés avec des buffs. Il n'est pas fait pour le combat direct, mais sa grande réserve de mana lui permet d'utiliser ses compétences fréquemment.",
 			speed: [
-				1, 1.1, 1.2, 1.3, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4,
-				1.4, 1.4, 1.4, 1.4,
+				3.5, 3.6, 3.7, 3.8, 3.9, 4, 4.1, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2,
 			], // [skill lv1, lv2, ..., lv18 ]
 
 			hitDistance: [5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
@@ -204,8 +201,7 @@ const characters = {
 			commentaire:
 				"Gromp est un mur de points de vie. Sa force réside dans sa capacité à survivre longtemps grâce à sa santé massive et sa régénération. Il est idéal pour absorber les dégâts et perturber les lignes ennemies. Ses dégâts sont faibles, mais sa présence est intimidante.",
 			speed: [
-				0.9, 1, 1.1, 1.2, 1.3, 1.3, 1.3, 1.3, 1.3, 1.3, 1.3, 1.3, 1.3, 1.3,
-				1.3, 1.3, 1.3, 1.3,
+				3.5, 3.6, 3.7, 3.8, 3.9, 4, 4.1, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2,
 			], // [skill lv1, lv2, ..., lv18 ]
 
 			hitDistance: [5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
@@ -260,8 +256,7 @@ const characters = {
 			commentaire:
 				"Zephyr est tout en vitesse. Sa grande mobilité lui permet de harceler ses ennemis et de se déplacer rapidement sur la carte. Il est parfait pour des attaques éclairs et pour poursuivre des cibles. Sa faiblesse est sa faible résistance.",
 			speed: [
-				1.2, 1.3, 1.4, 1.5, 1.6, 1.65, 1.7, 1.75, 1.8, 1.85, 1.9, 1.95, 2,
-				2.05, 2.1, 2.15, 2.2, 2.25,
+				3.5, 3.6, 3.7, 3.8, 3.9, 4, 4.1, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2,
 			], // [skill lv1, lv2, ..., lv18 ]
 
 			hitDistance: [5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
@@ -309,64 +304,6 @@ const characters = {
 			png: "Zephyr.png",
 			glb: "Zephyr.gltf",
 		},
-		// wizard: {
-		// 	name: "wizard",
-		// 	type: "mage",
-		// 	description_rapide: "Un mage puissant qui contrôle le feu.",
-		// 	commentaire:
-		// 		"wizard est un mage spécialisé dans les dégâts magiques. Il est très dépendant de son mana pour lancer des sorts puissants. Sa fragilité physique en fait une cible facile, il doit donc rester à distance pour être efficace.",
-		// 	speed: [
-		// 		1, 1.1, 1.2, 1.3, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4,
-		// 		1.4, 1.4, 1.4, 1.4,
-		// 	], // [skill lv1, lv2, ..., lv18 ]
-
-		// 	hitDistance: [
-		// 		6, 6.5, 7, 7.5, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-		// 	],
-		// 	autoAttackDamage: [
-		// 		50, 58, 66, 74, 82, 86, 90, 94, 98, 102, 106, 110, 114, 118, 122,
-		// 		126, 130, 134,
-		// 	],
-		// 	autoAttackCd: [
-		// 		1.9, 1.8, 1.7, 1.6, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5,
-		// 		1.5, 1.5, 1.5, 1.5, 1.5,
-		// 	],
-
-		// 	skill1Id: 0,
-		// 	skill2Id: 1,
-		// 	skill3Id: 2,
-		// 	ultimatId: 3,
-
-		// 	health: [
-		// 		125, 165, 205, 245, 285, 305, 325, 345, 365, 385, 405, 425, 445,
-		// 		465, 485, 505, 525, 545,
-		// 	],
-		// 	mana: [
-		// 		110, 140, 170, 200, 230, 250, 270, 290, 310, 330, 350, 370, 390,
-		// 		410, 430, 450, 470, 490,
-		// 	],
-		// 	HealthRegeneration: [
-		// 		1.1, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5, 2.7, 2.9, 3.1, 3.3, 3.5,
-		// 		3.7, 3.9, 4.1, 4.3, 4.5,
-		// 	],
-		// 	manaRegeneration: [
-		// 		1.8, 2.3, 2.8, 3.3, 3.8, 4.1, 4.4, 4.7, 5, 5.3, 5.6, 5.9, 6.2, 6.5,
-		// 		6.8, 7.1, 7.4, 7.7,
-		// 	],
-		// 	physiqueArmor: [
-		// 		10, 13, 16, 19, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46,
-		// 		48,
-		// 	],
-		// 	magicArmor: [
-		// 		25, 28, 31, 34, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61,
-		// 		63,
-		// 	],
-
-		// 	scale: 1,
-		// 	svg: "wizard.svg",
-		// 	png: "wizard.png",
-		// 	glb: "wizard.gltf",
-		// },
 		Flora: {
 			name: "Flora",
 			type: "healer",
@@ -375,8 +312,7 @@ const characters = {
 			commentaire:
 				"Flora est une soigneuse pure. Sa principale force est sa capacité à restaurer les points de vie de ses alliés. Elle possède une grande réserve de mana pour soutenir son équipe sur la durée. Elle est très faible en combat singulier et doit être protégée.",
 			speed: [
-				1, 1.1, 1.2, 1.3, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4, 1.4,
-				1.4, 1.4, 1.4, 1.4,
+				3.5, 3.6, 3.7, 3.8, 3.9, 4, 4.1, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2,
 			], // [skill lv1, lv2, ..., lv18 ]
 
 			hitDistance: [
@@ -434,8 +370,7 @@ const characters = {
 			commentaire:
 				"Shadow est un assassin spécialisé dans l'élimination de cibles uniques. Ses dégâts élevés et sa cadence de tir rapide lui permettent de tuer rapidement, mais il est extrêmement fragile. Il doit choisir ses combats avec soin et frapper au bon moment.",
 			speed: [
-				1.1, 1.2, 1.3, 1.4, 1.5, 1.55, 1.6, 1.65, 1.7, 1.75, 1.8, 1.85, 1.9,
-				1.95, 2, 2.05, 2.1, 2.15,
+				3.5, 3.6, 3.7, 3.8, 3.9, 4, 4.1, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2, 4.2,
 			], // [skill lv1, lv2, ..., lv18 ]
 
 			hitDistance: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
@@ -483,124 +418,6 @@ const characters = {
 			png: "Shadow.png",
 			glb: "Shadow.gltf",
 		},
-		// Adventurer: {
-		// 	name: "Adventurer",
-		// 	type: "Lambda",
-		// 	description_rapide: "Un aventurier polyvalent prêt à tout.",
-		// 	commentaire:
-		// 		"L'Aventurier est le personnage le plus équilibré du jeu. Il n'a pas de véritable point fort, mais il n'a pas non plus de faiblesse évidente. Il peut s'adapter à toutes les situations et est un excellent choix pour les nouveaux joueurs.",
-		// 	speed: [
-		// 		1, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.4, 1.4, 1.4, 1.4,
-		// 		1.4, 1.4, 1.4, 1.4, 1.4,
-		// 	], // [skill lv1, lv2, ..., lv18 ]
-
-		// 	hitDistance: [
-		// 		5, 5.5, 6, 6.5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-		// 	],
-		// 	autoAttackDamage: [
-		// 		40, 48, 56, 64, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116,
-		// 		120, 124,
-		// 	],
-		// 	autoAttackCd: [
-		// 		1.9, 1.8, 1.7, 1.6, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5,
-		// 		1.5, 1.5, 1.5, 1.5, 1.5,
-		// 	],
-
-		// 	skill1Id: 0,
-		// 	skill2Id: 1,
-		// 	skill3Id: 2,
-		// 	ultimatId: 3,
-
-		// 	health: [
-		// 		150, 200, 250, 300, 350, 375, 400, 425, 450, 475, 500, 525, 550,
-		// 		575, 600, 625, 650, 675,
-		// 	],
-		// 	mana: [
-		// 		80, 100, 120, 140, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250,
-		// 		260, 270, 280, 290,
-		// 	],
-		// 	HealthRegeneration: [
-		// 		1.5, 1.8, 2.1, 2.4, 2.7, 3, 3.3, 3.6, 3.9, 4.2, 4.5, 4.8, 5.1, 5.4,
-		// 		5.7, 6, 6.3, 6.6,
-		// 	],
-		// 	manaRegeneration: [
-		// 		1, 1.4, 1.8, 2.2, 2.6, 2.8, 3, 3.2, 3.4, 3.6, 3.8, 4, 4.2, 4.4, 4.6,
-		// 		4.8, 5.0, 5.2,
-		// 	],
-		// 	physiqueArmor: [
-		// 		20, 24, 28, 32, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60,
-		// 		62,
-		// 	],
-		// 	magicArmor: [
-		// 		20, 24, 28, 32, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60,
-		// 		62,
-		// 	],
-
-		// 	scale: 1,
-		// 	svg: "Adventurer.svg",
-		// 	png: "Adventurer.jpg",
-		// 	glb: "Adventurer.gltf",
-		// },
-		// ChefRipley: {
-		// 	name: "ChefRipley",
-		// 	type: "Lambda",
-		// 	description_rapide:
-		// 		"Un chef cuisinier qui se bat avec ses ustensiles.",
-		// 	commentaire:
-		// 		"ChefRipley est un combattant au corps à corps qui se distingue par sa robustesse. Il est un peu plus résistant que la moyenne, ce qui lui permet de rester dans la mêlée plus longtemps. Ses dégâts sont corrects et il peut être un bon choix pour ceux qui aiment le combat rapproché.",
-		// 	speed: [
-		// 		0.95, 1, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.35, 1.35, 1.35,
-		// 		1.35, 1.35, 1.35, 1.35, 1.35, 1.35,
-		// 	], // [skill lv1, lv2, ..., lv18 ]
-
-		// 	hitDistance: [
-		// 		4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5,
-		// 		4.5, 4.5, 4.5, 4.5, 4.5,
-		// 	],
-		// 	autoAttackDamage: [
-		// 		42, 50, 58, 66, 74, 78, 82, 86, 90, 94, 98, 102, 106, 110, 114, 118,
-		// 		122, 126,
-		// 	],
-		// 	autoAttackCd: [
-		// 		2, 1.9, 1.8, 1.7, 1.6, 1.6, 1.6, 1.6, 1.6, 1.6, 1.6, 1.6, 1.6, 1.6,
-		// 		1.6, 1.6, 1.6, 1.6,
-		// 	],
-
-		// 	skill1Id: 0,
-		// 	skill2Id: 1,
-		// 	skill3Id: 2,
-		// 	ultimatId: 3,
-
-		// 	health: [
-		// 		160, 215, 270, 325, 380, 405, 430, 455, 480, 505, 530, 555, 580,
-		// 		605, 630, 655, 680, 705,
-		// 	],
-		// 	mana: [
-		// 		75, 95, 115, 135, 155, 165, 175, 185, 195, 205, 215, 225, 235, 245,
-		// 		255, 265, 275, 285,
-		// 	],
-		// 	HealthRegeneration: [
-		// 		1.6, 1.9, 2.2, 2.5, 2.8, 3.1, 3.4, 3.7, 4, 4.3, 4.6, 4.9, 5.2, 5.5,
-		// 		5.8, 6.1, 6.4, 6.7,
-		// 	],
-		// 	manaRegeneration: [
-		// 		0.9, 1.3, 1.7, 2.1, 2.5, 2.7, 2.9, 3.1, 3.3, 3.5, 3.7, 3.9, 4.1,
-		// 		4.3, 4.5, 4.7, 4.9, 5.1,
-		// 	],
-		// 	physiqueArmor: [
-		// 		22, 26, 30, 34, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62,
-		// 		64,
-		// 	],
-		// 	magicArmor: [
-		// 		22, 26, 30, 34, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62,
-		// 		64,
-		// 	],
-
-		// 	scale: 1,
-		// 	svg: "ChefRipley.svg",
-		// 	png: "ChefRipley.jpg",
-		// 	glb: "ChefRipley.gltf",
-		// },
 	},
 };
 

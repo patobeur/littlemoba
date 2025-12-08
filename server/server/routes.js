@@ -4,6 +4,7 @@
 const path = require("path");
 const characters = require("../server_side/characters.js");
 const skills = require("../server_side/skills.js");
+const config = require("../server_side/config.js");
 
 /**
  * Setup all HTTP routes for pages
@@ -92,6 +93,10 @@ function setupRoutes(app, requireAuth, roomManager) {
 		}
 
 		res.json(enrichedChars);
+	});
+	// API Configuration
+	app.get("/api/config", (req, res) => {
+		res.json(config.GAME_CONSTANTS);
 	});
 }
 
