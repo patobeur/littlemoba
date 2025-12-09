@@ -118,7 +118,8 @@ module.exports = {
 	findUserByUsername,
 	bcrypt,
 	updateUserLevel,
-	updateUserStats
+	updateUserStats,
+	getAllUsersStats
 };
 
 function updateUserLevel(userId, newLevel) {
@@ -212,5 +213,37 @@ function updateUserStats(userId, stats) {
 				resolve({ id: userId, statsUpdated: true });
 			}
 		});
+	});
+}
+
+function getAllUsersStats() {
+	return new Promise((resolve, reject) => {
+		db.all(
+			`SELECT 
+				id,
+				username,
+				level,
+				games_played,
+				games_won,
+				games_lost,
+				games_unfinished,
+				total_xp,
+				total_kills,
+				total_assists,
+				total_damage_players,
+				total_damage_base,
+				total_damage_minions,
+				total_minions_killed
+			FROM users
+			ORDER BY total_xp DESC`,
+			[],
+			(err, rows) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(rows || []);
+				}
+			}
+		);
 	});
 }

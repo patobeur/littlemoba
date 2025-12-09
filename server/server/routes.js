@@ -5,6 +5,7 @@ const path = require("path");
 const characters = require("../server_side/characters");
 const skills = require("../server_side/skills.js");
 const config = require("../server_side/config.js");
+const { getAllUsersStats } = require("../database.js");
 
 /**
  * Setup all HTTP routes for pages
@@ -68,10 +69,26 @@ function setupRoutes(app, requireAuth, roomManager) {
 		res.sendFile(path.join(__dirname, "../../public/meshes3d.html"));
 	});
 
+	// Route pour la page des statistiques des joueurs - nécessite authentification
+	app.get("/players.html", requireAuth, (req, res) => {
+		res.sendFile(path.join(__dirname, "../../public/players.html"));
+	});
+
 	// Route de connexion - accessible sans auth
 	app.get("/login.html", (req, res) => {
 		res.sendFile(path.join(__dirname, "../../public/login.html"));
 	});
+	// API Players Stats
+	app.get("/api/players/stats", requireAuth, async (req, res) => {
+		try {
+			const players = await getAllUsersStats();
+			res.json(players);
+		} catch (error) {
+			console.error("Error fetching players stats:", error);
+			res.status(500).json({ error: "Failed to fetch players stats" });
+		}
+	});
+
 	// API Personnages
 	app.get("/api/characters", (req, res) => {
 		// Enrich character data with skills
