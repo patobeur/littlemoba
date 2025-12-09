@@ -1,4 +1,4 @@
-const characters = require("../characters.js");
+const characters = require("../characters");
 const config = require("../config.js");
 const { updateUserLevel } = require("../../database.js");
 

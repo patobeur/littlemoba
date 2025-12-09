@@ -1,4 +1,4 @@
-const characters = require("../characters.js");
+const characters = require("../characters");
 
 /**
  * RegenerationSystem
