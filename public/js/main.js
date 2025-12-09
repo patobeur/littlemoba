@@ -6,7 +6,7 @@ import {
 	setInputMode,
 	setPlayersMap,
 } from "./input.js";
-import { initGameUI } from "./game-ui.js";
+import { initGameUI } from "./ui/game-ui.js";
 import { initScene } from "./scene.js";
 
 // Import new modules
