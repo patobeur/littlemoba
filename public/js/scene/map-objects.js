@@ -168,12 +168,13 @@ function addStructureHUD(mesh, strData, id, color) {
     });
 }
 
-export function updateStructureHUD(id, hp, maxHp) {
+export function updateStructureHUD(id, hp, maxHp, level) {
     const mesh = structures.get(id);
     if (!mesh || !mesh.userData.hud) return;
 
     updateHUD(mesh.userData.hud, {
         health: hp,
-        maxHealth: maxHp
+        maxHealth: maxHp,
+        level: level
     });
 }

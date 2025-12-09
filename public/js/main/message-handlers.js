@@ -17,7 +17,8 @@ import {
 } from "./handlers/combat-handlers.js";
 import {
     handleStructureHit,
-    handleStructureDeath
+    handleStructureDeath,
+    handleStructureLevelUp
 } from "./handlers/structure-handlers.js";
 import {
     handlePlayerXp,
@@ -87,6 +88,9 @@ export function handleMessage(msg) {
             break;
         case "structure-death":
             handleStructureDeath(msg);
+            break;
+        case "structure-level-up":
+            handleStructureLevelUp(msg);
             break;
         case "minion-spawn":
             handleMinionSpawn(msg);
