@@ -143,6 +143,7 @@ class MinionManager {
 			return events;
 		}
 
+
 		for (let i = 0; i < count; i++) {
 			const minionId = `minion_${this.nextMinionId++}`;
 
